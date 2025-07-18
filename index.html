@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Wedding Invite - Vimalkumar & Dharshinipriya</title>
+  <style>
+    body {
+      margin: 0;
+      background: maroon;
+      color: gold;
+      font-family: Georgia, serif;
+      overflow: hidden;
+    }
+
+    #startScreen, #quizScreen, #videoContainer, #messageBox {
+      position: absolute;
+      width: 100vw;
+      height: 100vh;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      box-sizing: border-box;
+      padding: 40px;
+    }
+
+    #startScreen, #quizScreen {
+      background: maroon;
+      color: gold;
+    }
+
+    #startScreen h1, #quizScreen h1 {
+      font-size: 3em;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 24px;
+      font-size: 1.2em;
+      background: gold;
+      color: maroon;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    #messageBox {
+      background: rgba(64, 0, 0, 0.95);
+      font-size: 1.4em;
+      text-align: center;
+      color: gold;
+    }
+
+    #messageBox h1 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+    }
+
+    #messageBox h2 {
+      font-size: 2em;
+      margin-bottom: 15px;
+    }
+
+    .quiz-question {
+      margin-bottom: 25px;
+      max-width: 700px;
+      text-align: left;
+    }
+
+    .quiz-question label {
+      display: block;
+      margin: 5px 0;
+    }
+
+    #errorMsg {
+      color: pink;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Start Screen -->
+<div id="startScreen">
+  <h1>Welcome <span id="guestName">Guest</span>!</h1>
+  <p>You're cordially invited to our wedding celebration</p>
+  <button onclick="showQuiz()">Begin Quiz</button>
+</div>
+
+<!-- Quiz Section -->
+<div id="quizScreen">
+  <h1>Riddle Unlock Challenge</h1>
+  <form id="quizForm">
+    <div class="quiz-question">
+      <p>1. I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I?</p>
+      <label><input type="radio" name="q1" value="A shadow"> A shadow</label>
+      <label><input type="radio" name="q1" value="An echo"> An echo</label>
+      <label><input type="radio" name="q1" value="A whisper"> A whisper</label>
+      <label><input type="radio" name="q1" value="A breeze"> A breeze</label>
+    </div>
+    <button type="button" onclick="submitQuiz()">Unlock Invitation</button>
+    <div id="errorMsg"></div>
+  </form>
+</div>
+
+<!-- Audio -->
+<audio id="bgMusic" loop>
+  <source src="wedding_music.mp3" type="audio/mp3">
+</audio>
+
+<!-- Video Section -->
+<div id="videoContainer">
+  <video id="weddingVideo" muted playsinline>
+    <source src="wedding_video.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+</div>
+
+<!-- Message Section -->
+<div id="messageBox">
+  <h2>Dear <span id="guestName2">Guest</span>,</h2>
+  <p>
+    🗓 <strong>Date:</strong> 27 August & 28 August 2025<br>
+    📍 <strong>Venue:</strong> Sri Venkateswara Palace, Sattur
+  </p>
+  <p>
+    Let your presence bless our union and bring joy to our special day.<br>
+    We look forward to celebrating with you!
+  </p>
+</div>
+
+<!-- JavaScript -->
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const guest = params.get("guest") || "Guest";
+  document.getElementById("guestName").textContent = guest;
+  document.getElementById("guestName2").textContent = guest;
+
+  const startScreen = document.getElementById("startScreen");
+  const quizScreen = document.getElementById("quizScreen");
+  const videoContainer = document.getElementById("videoContainer");
+  const weddingVideo = document.getElementById("weddingVideo");
+  const messageBox = document.getElementById("messageBox");
+  const bgMusic = document.getElementById("bgMusic");
+  const errorMsg = document.getElementById("errorMsg");
+
+  startScreen.style.display = "flex";
+
+  function showQuiz() {
+    startScreen.style.display = "none";
+    quizScreen.style.display = "flex";
+  }
+
+  function submitQuiz() {
+    const q1 = document.querySelector('input[name="q1"]:checked');
+    if (q1 && q1.value === "An echo") {
+      quizScreen.style.display = "none";
+      bgMusic.play().catch(err => console.log("Music play failed:", err));
+      videoContainer.style.display = "flex";
+      weddingVideo.play().catch(err => alert("Video couldn't play: " + err.message));
+      weddingVideo.onended = () => {
+        videoContainer.style.display = "none";
+        messageBox.style.display = "flex";
+      };
+    } else {
+      errorMsg.textContent = "Oops! That's not quite right. Try again!";
+    }
+  }
+</script>
+
+</body>
+</html>
